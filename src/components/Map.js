@@ -3,9 +3,9 @@ import {
     useLoadScript,
     HeatmapLayer,
 } from "@react-google-maps/api";
-import axios from 'axios';
 import { styles } from './mapStyles';
 import { useState , useRef, useCallback, useEffect} from "react";
+import { getLocations } from "../services/LocationService";
   
 const libraries = ["visualization"];
   
@@ -38,14 +38,14 @@ function MapComponent() {
     })
 
     const getData = async () => {
-        const data = await axios.get('http://localhost:5000/points');
-        console.log(data.data)
-        setHeatMapData(data.data.map(pos => {
-            return {
-                location: new window.google.maps.LatLng(pos.lat,pos.lng),
-                weight: 1
-            }
-        }))
+        getLocations().then(data => {
+            setHeatMapData(data.map(pos => {
+                return {
+                    location: new window.google.maps.LatLng(pos.lat,pos.lng),
+                    weight: 1
+                }
+            }))
+        })
     };
 
     useEffect(() => {
